@@ -18,6 +18,7 @@
 #include <ossim/base/ossimTrace.h>
 
 static ossimTrace traceDebug("ossimStreamFactoryRegistry:debug");
+
 ossim::StreamFactoryRegistry* ossim::StreamFactoryRegistry::m_instance = 0;
 static const ossimString ISTREAM_BUFFER_KW = "ossim.stream.factory.registry.istream.buffer";
 ossim::StreamFactoryRegistry::StreamFactoryRegistry()
@@ -81,13 +82,9 @@ void ossim::StreamFactoryRegistry::loadPreferences()
       {
          m_bufferInfoList[idx].m_enableBlocked = bufferIStreamBlockEnabled.toBool();
       }
-      if(m_bufferInfoList[idx].m_enabled&&!bufferIStreamIncludePattern.empty())
+      if(!bufferIStreamIncludePattern.empty())
       {
-         m_bufferInfoList[idx].m_pattern.compile(bufferIStreamIncludePattern.c_str());
-      }
-      else
-      {
-         m_bufferInfoList[idx].m_pattern.set_invalid();
+         m_bufferInfoList[idx].m_pattern = bufferIStreamIncludePattern;
       }
       if(traceDebug())
       {
@@ -96,7 +93,7 @@ void ossim::StreamFactoryRegistry::loadPreferences()
          << "enabled:       " << ossimString::toString(m_bufferInfoList[idx].m_enabled)<< "\n"
          << "enableBlocked: " << ossimString::toString(m_bufferInfoList[idx].m_enableBlocked)<< "\n"
          << "size:          " << m_bufferInfoList[idx].m_size << "\n"
-         << "pattern:       " << bufferIStreamIncludePattern << "\n";
+         << "pattern:       " << m_bufferInfoList[idx].m_pattern << "\n";
       }
 
    }
@@ -116,13 +113,17 @@ bool ossim::StreamFactoryRegistry::getBufferInfo(BufferInfo& bufferInfo,
       iter != m_bufferInfoList.end(); 
       ++iter)
    {
-      if(iter->m_enabled&&iter->m_pattern.is_valid())
+      if(iter->m_enabled)
       {
-         if(iter->m_pattern.find(connectionString.c_str()))
+         m_patternMatcher.compile(iter->m_pattern);
+         if(m_patternMatcher.is_valid())
          {
-            bufferInfo = *iter;
-            result = true;
-            break;
+            if(m_patternMatcher.find(connectionString.c_str()))
+            {
+               bufferInfo = *iter;
+               result = true;
+               break;
+            }            
          }
       }
    }

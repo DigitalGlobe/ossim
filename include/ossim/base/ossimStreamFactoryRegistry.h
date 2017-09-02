@@ -189,7 +189,7 @@ namespace ossim
                      m_size(4096){}
         bool                 m_enabled;
         bool                 m_enableBlocked;
-        mutable ossimRegExp  m_pattern;
+        ossimString          m_pattern;
         ossim_uint64         m_size;
 
       };     
@@ -213,6 +213,7 @@ namespace ossim
       std::vector<StreamFactoryBase*> m_factoryList;
       std::vector<BufferInfo>  m_bufferInfoList;
       static StreamFactoryRegistry*   m_instance;
+      mutable ossimRegExp m_patternMatcher;
    };
    
 } // End: namespace ossim
