@@ -15,7 +15,9 @@
 #include <ossim/base/ossimBlockIStream.h>
 #include <fstream>
 #include <algorithm>
+#include <ossim/base/ossimTrace.h>
 
+static ossimTrace traceDebug("ossimStreamFactoryRegistry:debug");
 ossim::StreamFactoryRegistry* ossim::StreamFactoryRegistry::m_instance = 0;
 static const ossimString ISTREAM_BUFFER_KW = "ossim.stream.factory.registry.istream.buffer";
 ossim::StreamFactoryRegistry::StreamFactoryRegistry()
@@ -40,6 +42,11 @@ ossim::StreamFactoryRegistry* ossim::StreamFactoryRegistry::instance()
 
 void ossim::StreamFactoryRegistry::loadPreferences()
 {
+   if(traceDebug())
+   {
+      ossimNotify(ossimNotifyLevel_WARN)
+      << "ossim::StreamFactoryRegistry::loadPreferences: ....... entered!\n";
+   }
    std::vector<ossimString> sortedList;
    ossimPreferences::instance()->preferencesKWL()
          .getSortedList(sortedList, ISTREAM_BUFFER_KW);
@@ -82,6 +89,21 @@ void ossim::StreamFactoryRegistry::loadPreferences()
       {
          m_bufferInfoList[idx].m_pattern.set_invalid();
       }
+      if(traceDebug())
+      {
+         ossimNotify(ossimNotifyLevel_WARN)
+         << "ossim::StreamFactoryRegistry adding BufferInfo: \n"
+         << "enabled:       " << ossimString::toString(m_bufferInfoList[idx].m_enabled)<< "\n"
+         << "enableBlocked: " << ossimString::toString(m_bufferInfoList[idx].m_enableBlocked)<< "\n"
+         << "size:          " << m_bufferInfoList[idx].m_size << "\n"
+         << "pattern:       " << bufferIStreamIncludePattern << "\n";
+      }
+
+   }
+   if(traceDebug())
+   {
+      ossimNotify(ossimNotifyLevel_WARN)
+      << "ossim::StreamFactoryRegistry::loadPreferences: ....... leaving!\n";
    }
 }
 
