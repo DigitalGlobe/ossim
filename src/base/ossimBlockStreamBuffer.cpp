@@ -1,5 +1,6 @@
 #include <ossim/base/ossimBlockStreamBuffer.h>
 #include <ossim/base/ossimTrace.h>
+#include <cstring> /* for memcpy */
 
 static ossimTrace traceDebug("BlockStreamBuffer:debug");
 
