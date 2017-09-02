@@ -736,7 +736,7 @@ ossim.plugins.aws.s3.cacheInvalidLocations: true
 
 // If a password is on your private key file then specify it here. 
 //ossim.plugins.web.curl.clientKeyPassword:
-/---
+
 
 // Keywords 
 // This is used by the stream factory registry when generating 
