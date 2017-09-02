@@ -40,6 +40,8 @@
 #include <fstream>
 #include <sstream>
 
+// needed by std::shared_ptr
+#include <memory>
 //---
 // Depreciated:
 //---
